@@ -1,8 +1,7 @@
 from my_web_fw.urls import Url
-from view import HomePage, About, TestTemplate
+from view import HomePage, About
 
 urlpatterns = [
     Url("^$", HomePage),
     Url("^/about$", About),
-    Url("^/test$", TestTemplate)
 ]
