@@ -12,7 +12,7 @@ class Engine:
         template_path = os.path.join(self.template_dir, template_name)
         if not os.path.isfile(template_path):
             raise Exception("{path} is not file".format(path=template_path))
-        with open(template_path) as f:
+        with open(template_path, encoding="utf-8") as f:
             return f.read()
 
 

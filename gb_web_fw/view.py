@@ -8,7 +8,8 @@ from my_web_fw.template_engine import render
 
 class HomePage(View):
     def get(self, request: Request, *args, **kwargs) -> Response:
-        return Response(body="Hellow world, this is HomePage")
+        body = render(request, "index.html", **kwargs)
+        return Response(body=body)
 
 
 class About(View):
@@ -25,5 +26,4 @@ class About(View):
 
 class TestTemplate(View):
     def get(self, request: Request, *args, **kwargs) -> Response:
-        body = render(request, "gp_template.html", **kwargs)
-        return Response(body=body)
+        return Response(body="Пустая страница, без html шаблона")
