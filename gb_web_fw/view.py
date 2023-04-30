@@ -24,10 +24,9 @@ class About(View):
         return Response(body=body)
 
 
-class Feedback(View):
+class TestTemplate(View):
     def get(self, request: Request, *args, **kwargs) -> Response:
-        body = render(request, "feedback.html", **kwargs)
-        return Response(body=body)
+        return Response(body="Пустая страница, без html шаблона")
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         errors = {}
