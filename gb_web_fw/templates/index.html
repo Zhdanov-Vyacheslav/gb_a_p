@@ -26,6 +26,18 @@
       <div id="content">
         <h1>Приветствую!</h1>
         <p>website для домашней работы по курсу "Архитектура и шаблоны проектирования на Python"</p>
+	  	<h1>Обратная связь</h1>
+		<p>Напишите нам свои предложения или пожелания</p>
+		<form action="" method="post">
+			<p><b><label for="email">Ваш email:</label></b></p>
+		 	<input name="email" id="email">
+			<p>{{err_email}}<p>
+			<p><b>Ваш отзыв:</b></p>
+  			<p><textarea name="comment"></textarea></p>
+			{{err_comment}}
+ 	    	<p><input type="submit" value="Отправить отзыв"></p>
+			{{message}}
+		</form>
       </div>
     </div>
     <div id="footer">

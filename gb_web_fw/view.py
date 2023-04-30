@@ -11,23 +11,6 @@ class HomePage(View):
         body = render(request, "index.html", **kwargs)
         return Response(body=body)
 
-
-class About(View):
-    def get(self, request: Request, *args, **kwargs) -> Response:
-        body = "Good info about this site"
-        info = request.GET.get("info")
-        if info:
-            body += "\nВаше info={info}".format(info=info)
-        time = request.GET.get("time")
-        if time:
-            body += "\nТекущее время: {time}".format(time=datetime.now().time().isoformat(timespec="seconds"))
-        return Response(body=body)
-
-
-class TestTemplate(View):
-    def get(self, request: Request, *args, **kwargs) -> Response:
-        return Response(body="Пустая страница, без html шаблона")
-
     def post(self, request: Request, *args, **kwargs) -> Response:
         errors = {}
         context = {}
@@ -47,3 +30,20 @@ class TestTemplate(View):
             print(context)
             # ///
         return self.get(request, *args, **kwargs, **errors, **context)
+
+
+class About(View):
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        body = "Good info about this site"
+        info = request.GET.get("info")
+        if info:
+            body += "\nВаше info={info}".format(info=info)
+        time = request.GET.get("time")
+        if time:
+            body += "\nТекущее время: {time}".format(time=datetime.now().time().isoformat(timespec="seconds"))
+        return Response(body=body)
+
+
+class TestTemplate(View):
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        return Response(body="Пустая страница, без html шаблона")
