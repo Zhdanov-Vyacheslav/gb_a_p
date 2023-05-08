@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}
+	Создание курса
+{% endblock %}
+{% block style %}{% endblock %}
+{% block body %}
+	<div id="site_content">
+	  <div id="content">
+        <h1>Создание курса для категории "{{name}}"</h1>
+          <form class="row g-3" method="post">
+          <div class="col-md-4">
+            <label for="name" class="form-label">Название курса</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+          <div class="col-md-4">
+            <label for="start" class="form-label">Старт курса</label>
+            <input type="datetime-local" class="form-control" id="start" name="start" required>
+          </div>
+          <div class="col-md-3">
+            <label for="type" class="form-label">Тип курса</label>
+            <select name="type" id="type" class="form-select" aria-describedby="validationServer04Feedback" required>
+              <option></option>
+              <option value="online">online</option>
+              <option value="offline">offline</option>
+            </select>
+          </div>
+          <div class="col-md-11">
+            <label for="address" class="form-label">Адрес проведения курса</label>
+            <input type="text" class="form-control" id="address" name="address" required>
+          </div>
+          <div class="col-md-11">
+            <label for="text" class="form-label">Описание курса</label>
+            <br>
+            <textarea class="form-control" id="text" name="text" required></textarea>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Создать</button>
+          </div>
+          {% for error in errors.values() %}
+            <br>
+            {{error}}
+          {% endfor %}
+        </form>
+	  </div>
+	</div>
+{% endblock %}

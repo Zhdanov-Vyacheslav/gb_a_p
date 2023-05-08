@@ -10,7 +10,7 @@ class Response:
 
     @property
     def status(self):
-        if self.status_code == 200:
+        if self.status_code in [200, 201]:
             status = "OK"
         else:
             status = "ERROR"

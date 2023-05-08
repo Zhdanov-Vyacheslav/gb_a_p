@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+	Список курсов
+{% endblock %}
+{% block style %}{% endblock %}
+{% block body %}
+	<div id="site_content">
+	  <div id="content">
+        <h1>Список курсов</h1>
+        <ul>
+        {% for course in courses.values() %}
+          <li>
+            {{course.start}} {{course.name}}
+          </li>
+        {% endfor %}
+        </ul>
+	  </div>
+	</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+	Список категорий
+{% endblock %}
+{% block style %}{% endblock %}
+{% block body %}
+	<div id="site_content">
+	  <div id="content">
+        <h1>Список категорий</h1>
+        <ul>
+        {% for category in categories.values() %}
+          <li>
+            {{category.name}} <span><a href="/course/create/?id={{category.id}}">Создать курс</a></span>
+          </li>
+        {% endfor %}
+        </ul>
+	  </div>
+	</div>
+{% endblock %}

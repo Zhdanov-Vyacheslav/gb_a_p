@@ -1,7 +1,9 @@
+import os
 import re
 from typing import List, Type
 
 from .exceptions import NotFound, NotAllowed
+from .template_engine import render
 from .urls import Url
 from .view import View
 from .request import Request
@@ -9,31 +11,41 @@ from .response import Response
 
 
 class MyWebFW:
-    __slots__ = ("urls", "settings")
+    __slots__ = ("urls", "settings", "engine", "__code_404")
 
-    def __init__(self, urls: List[Url], settings: dict):
+    def __init__(self, urls: List[Url], settings: dict, engine):
         self.urls = urls
         self.settings = settings
+        self.engine = engine
+        self.__code_404 = None
 
     def __call__(self, environ: dict, start_response):
+        request = self._get_request(environ)
         try:
             view = self._get_view(environ)
-            request = self._get_request(environ)
             response = self._get_response(environ, view, request)
-            start_response(
-                str(response.status),
-                list(response.headers.items())
-            )
-            return iter([response.body])
-        except NotFound:
+        except NotFound as ex:
             # Заглушка от краша
             if environ["PATH_INFO"] == "/favicon.ico":
                 print("/favicon.ico NOT FOUND")
-                start_response("201 NOT_FOUND", [
-                    ("Content-Type", "text/plain; charset=utf-8"),
-                    ("Content-Length", "0")
-                ])
-                return iter([b""])
+                response = Response(body="", status_code=201)
+            # Сохраняем 404 страницу
+            elif self.__code_404 is None:
+                path = os.path.join(self.settings["BASE_DIR"], self.settings["TEMPLATE_DIR_NAME"], "404.html")
+                # Если есть шаблон, используем
+                if os.path.isfile(path):
+                    self.__code_404 = Response(body=render(request, "404.html"), status_code=ex.code)
+                else:
+                    self.__code_404 = Response(body=ex.text, status_code=ex.code)
+                response = self.__code_404
+            else:
+                response = self.__code_404
+        start_response(
+            str(response.status),
+            list(response.headers.items())
+        )
+        return iter([response.body])
+
 
     @staticmethod
     def _prepare_url(url: str) -> str:
@@ -57,9 +69,8 @@ class MyWebFW:
     def _get_request(self, environ: dict) -> Request:
         return Request(environ, settings=self.settings)
 
-    @staticmethod
-    def _get_response(environ: dict, view: View, request: Request) -> Response:
+    def _get_response(self, environ: dict, view: View, request: Request) -> Response:
         method = environ["REQUEST_METHOD"].lower()
         if not hasattr(view, method):
             raise NotAllowed
-        return getattr(view, method)(request)
+        return getattr(view, method)(request, engine=self.engine)
