@@ -10,4 +10,4 @@ about = Views("About", "/about")
 class About(View):
     def get(self, request: Request, *args, **kwargs) -> Response:
         body = render(request, "about.html", **kwargs)
-        return Response(body=body)
+        return Response(request, body=body)

@@ -10,7 +10,7 @@
         <ul>
         {% for course in courses.values() %}
           <li>
-            {{course.start}} {{course.name}}
+            {{course.start}} {{course.name}} <span><a href="/course/enroll/?id={{course.id}}">Записаться</a></span>
           </li>
         {% endfor %}
         </ul>

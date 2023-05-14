@@ -6,10 +6,26 @@ from gb_web_fw.my_web_fw.view import View, Views
 course = Views("Course", "/course")
 
 
+@course.route("/enroll")
+class Enroll(View):
+    def get(self, request: Request, engine=None, *args, **kwargs) -> Response:
+        user_id = request.recognize()
+        if user_id is not None:
+            raw_id = request.GET.get("id")
+            if raw_id:
+                try:
+                    _user = engine.get.student(id=int(user_id))
+                    _course = engine.get.course(id=int(raw_id[0]))
+                    _user.courses.setdefault(_course.id, _course)
+                except Exception:
+                    pass
+        return Response(request, body=render(request, "courses/list.html", courses=engine.db["courses"], **kwargs))
+
+
 @course.route("/list")
 class List(View):
     def get(self, request: Request, engine=None, *args, **kwargs) -> Response:
-        return Response(body=render(request, "courses/list.html", courses=engine.db["courses"], **kwargs))
+        return Response(request, body=render(request, "courses/list.html", courses=engine.db["courses"], **kwargs))
 
 
 @course.route("/create")
@@ -20,7 +36,7 @@ class Create(View):
         if raw_id is not None:
             category = engine.get.category(id=int(raw_id[0]))
             context["name"] = category.name
-        return Response(body=render(
+        return Response(request, body=render(
             request,
             "courses/create.html",
             errors=kwargs.pop("errors", {}),
@@ -49,11 +65,11 @@ class Create(View):
         if raw_text and raw_name and raw_start and raw_type and raw_address:
             additional = {"location": raw_address[0]} if raw_type[0] == "offline" else {"url": raw_address[0]}
             _course = engine.create.course(raw_type[0],
-                                          name=raw_name[0],
-                                          start=raw_start[0],
-                                          text=raw_text[0],
-                                          **additional
-                                          )
+                                           name=raw_name[0],
+                                           start=raw_start[0],
+                                           text=raw_text[0],
+                                           **additional
+                                           )
             raw_id = request.GET.get("id")
             if raw_id:
                 category = engine.db["categories"].get(int(raw_id[0]), None)

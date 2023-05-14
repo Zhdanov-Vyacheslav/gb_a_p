@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+	Список студентов
+{% endblock %}
+{% block style %}{% endblock %}
+{% block body %}
+	<div id="site_content">
+	  <div id="content">
+        <h1>Список студентов</h1>
+        <ul>
+        {% for student in students.values() %}
+          <li>
+            {{student.name}} {% for course in student.courses.values() %} <span><a href="/course/?id={{course.id}}">{{course.name}}</a></span> {% endfor %}
+          </li>
+        {% endfor %}
+        </ul>
+	  </div>
+	</div>
+{% endblock %}

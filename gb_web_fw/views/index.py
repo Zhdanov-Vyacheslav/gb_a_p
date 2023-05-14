@@ -15,7 +15,7 @@ class HomePage(View):
         date = datetime.now().date()
         context.setdefault("date", date)
         body = render(request, "index.html", **context, **kwargs)
-        return Response(body=body)
+        return Response(request, body=body)
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         errors = {}

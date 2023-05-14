@@ -29,22 +29,21 @@ class MyWebFW:
             # Заглушка от краша
             if environ["PATH_INFO"] == "/favicon.ico":
                 print("/favicon.ico NOT FOUND")
-                response = Response(body="", status_code=201)
+                response = Response(request, body="", status_code=201)
             # Сохраняем 404 страницу
             elif self.__code_404 is None:
                 path = os.path.join(self.settings["BASE_DIR"], self.settings["TEMPLATE_DIR_NAME"], "404.html")
                 # Если есть шаблон, используем
                 if os.path.isfile(path):
-                    self.__code_404 = Response(body=render(request, "404.html"), status_code=ex.code)
+                    self.__code_404 = Response(request, body=render(request, "404.html"), status_code=ex.code)
                 else:
-                    self.__code_404 = Response(body=ex.text, status_code=ex.code)
+                    self.__code_404 = Response(request, body=ex.text, status_code=ex.code)
                 response = self.__code_404
             else:
                 response = self.__code_404
-        start_response(
-            str(response.status),
-            list(response.headers.items())
-        )
+
+        start_response(response.status, response.headers)
+
         return iter([response.body])
 
     def __views(self, views: List[Views]):

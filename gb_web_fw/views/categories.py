@@ -10,13 +10,13 @@ category = Views("Category", "/category")
 class List(View):
     def get(self, request: Request, engine=None, *args, **kwargs) -> Response:
         context = {"categories": engine.db["categories"]}
-        return Response(body=render(request, "categories/list.html", **context, **kwargs))
+        return Response(request, body=render(request, "categories/list.html", **context, **kwargs))
 
 
 @category.route("/create")
 class Create(View):
     def get(self, request: Request, engine=None, *args, **kwargs) -> Response:
-        return Response(body=render(request, "categories/create.html", errors=kwargs.pop("errors", {}), **kwargs))
+        return Response(request, body=render(request, "categories/create.html", errors=kwargs.pop("errors", {}), **kwargs))
 
     def post(self, request: Request, engine=None, *args, **kwargs) -> Response:
         errors = {}

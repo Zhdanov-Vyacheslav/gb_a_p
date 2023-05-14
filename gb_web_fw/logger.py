@@ -1,8 +1,32 @@
 import os
+from abc import ABCMeta, abstractmethod
 from datetime import datetime
+from typing import List
 
 DEBUG = os.getenv("DEBUG", "")
 DEBUG = True if "1" == DEBUG or "true" == DEBUG.lower() else False
+
+
+# Strategy для логера
+class Writer(metaclass=ABCMeta):
+    @abstractmethod
+    def write(self, msg, name):
+        pass
+
+
+class ConsoleWriter(Writer):
+    def write(self, msg, name):
+        print(msg)
+
+
+class LogFileWriter(Writer):
+    def __init__(self):
+        self.__path = os.path.dirname(__file__)
+
+    def write(self, msg, name):
+        path = os.path.join(os.path.split(self.__path)[0], name.lower() + ".log")
+        with open(path, "a", encoding="UTF-8") as f:
+            f.write(msg)
 
 
 # Singleton для логгера
@@ -27,7 +51,7 @@ class MetaLogger(type):
 
 
 class Logger(metaclass=MetaLogger):
-    def __init__(self, name: str):
+    def __init__(self, name: str, writers: List[Writer] = None):
         self.__levels = {
             "CRITICAL",
             "FATAL",
@@ -38,7 +62,7 @@ class Logger(metaclass=MetaLogger):
         if DEBUG:
             self.__levels.add("DEBUG")
         self.__name = name
-        self.__path = os.path.join(os.path.split(os.path.dirname(__file__))[0], name.lower() + ".log")
+        self.__writers = writers if writers else [ConsoleWriter(), LogFileWriter()]
 
     def __getattr__(self, item):
         if item.upper() in self.__levels:
@@ -62,6 +86,5 @@ class Logger(metaclass=MetaLogger):
             name=self.__name,
             text=text
         )
-        print(log)
-        with open(self.__path, "a", encoding="UTF-8") as f:
-            f.write(log)
+        for writer in self.__writers:
+            writer.write(log, self.__name)

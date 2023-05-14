@@ -1,21 +1,23 @@
 from gb_web_fw.logger import Logger
-from models import Courses, Category
+from models import Courses, Category, Users
 
 log_creator = Logger("Creator")
 
 
 class Creator:
     def __init__(self):
-        self.__models = {
+        self._models = {
             "course": Courses.create,
-            "category": self.__category
+            "category": self.__category,
+            "user": Users.create
         }
 
     def __getattr__(self, item):
-        if item.lower() in self.__models:
+        _item = item.lower()
+        if _item in self._models:
             def interlayer(*args, **kwargs):
                 log_creator.info("Создается {}, параметры: {args}, {kwargs}".format(item, args=args, kwargs=kwargs))
-                return self.__models[item](*args, **kwargs)
+                return self._models[item](*args, **kwargs)
             return interlayer
 
     @staticmethod
@@ -29,6 +31,8 @@ class Getter:
         self.__models = {
             "course": self.db["courses"],
             "category": self.db["categories"],
+            "teacher": self.db["teachers"],
+            "student": self.db["students"]
         }
 
     def __getattr__(self, item):
@@ -52,7 +56,9 @@ class Engine:
     def __init__(self):
         self.db = {
             "courses": {},
-            "categories": {}
+            "categories": {},
+            "teachers": {},
+            "students": {}
         }
         self.__engine = {
             "create": Creator(),

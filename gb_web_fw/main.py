@@ -6,7 +6,9 @@ from views import views
 
 settings = {
     "BASE_DIR": os.path.dirname(os.path.abspath(__file__)),
-    "TEMPLATE_DIR_NAME": "templates"
+    "TEMPLATE_DIR_NAME": "templates",
+    "SECRET_KEY": "supersecretkey",
+    "DOMAIN": "localhost"
 }
 
 engine = Engine()
