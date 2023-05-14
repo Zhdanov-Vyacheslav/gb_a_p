@@ -2,7 +2,7 @@ import os
 
 from gb_web_fw.engine import Engine
 from my_web_fw.main import MyWebFW
-from urls import urlpatterns
+from views import views
 
 settings = {
     "BASE_DIR": os.path.dirname(os.path.abspath(__file__)),
@@ -12,8 +12,7 @@ settings = {
 engine = Engine()
 
 app = MyWebFW(
-    urls=urlpatterns,
+    views=views,
     settings=settings,
     engine=engine
 )
-

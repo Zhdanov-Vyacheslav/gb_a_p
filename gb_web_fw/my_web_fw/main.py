@@ -5,19 +5,20 @@ from typing import List, Type
 from .exceptions import NotFound, NotAllowed
 from .template_engine import render
 from .urls import Url
-from .view import View
+from .view import View, Views
 from .request import Request
 from .response import Response
 
 
 class MyWebFW:
-    __slots__ = ("urls", "settings", "engine", "__code_404")
+    __slots__ = ("urls", "views", "settings", "engine", "__code_404")
 
-    def __init__(self, urls: List[Url], settings: dict, engine):
-        self.urls = urls
+    def __init__(self, views: List[Views], settings: dict, engine):
+        self.urls = []
         self.settings = settings
         self.engine = engine
         self.__code_404 = None
+        self.__views(views)
 
     def __call__(self, environ: dict, start_response):
         request = self._get_request(environ)
@@ -46,6 +47,15 @@ class MyWebFW:
         )
         return iter([response.body])
 
+    def __views(self, views: List[Views]):
+        for el in views:
+            for url, view in el.views.items():
+                self.urls.append(
+                    Url(
+                        "^{prefix}{url}$".format(prefix=self._prepare_url(el.url), url=self._prepare_url(url)),
+                        view
+                    )
+                )
 
     @staticmethod
     def _prepare_url(url: str) -> str:

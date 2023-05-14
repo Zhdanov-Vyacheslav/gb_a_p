@@ -3,9 +3,12 @@ from datetime import datetime
 from gb_web_fw.my_web_fw.request import Request
 from gb_web_fw.my_web_fw.response import Response
 from gb_web_fw.my_web_fw.template_engine import render
-from gb_web_fw.my_web_fw.view import View
+from gb_web_fw.my_web_fw.view import View, Views
+
+index = Views("HomePage", "/")
 
 
+@index.route("/")
 class HomePage(View):
     def get(self, request: Request, *args, **kwargs) -> Response:
         context = {}
